@@ -31,7 +31,7 @@ namespace ariel
         cout << "(" << _x << "," << _y << ")" << endl;
     }
 
-    Point Point::moveTowards(const Point &destination, double distance)
+    Point Point::moveTowards(const Point &destination, double distance) const
     {
         if (distance == 0)
             return *this;

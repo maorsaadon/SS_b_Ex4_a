@@ -13,7 +13,7 @@ namespace ariel
             return;
         }
         else
-            _location.moveTowards(enemy->getLocation(), _speed);
+            getLocation().moveTowards(enemy->getLocation(), _speed);
     }
 
     void Ninja::slash(Character *enemy)
@@ -26,23 +26,23 @@ namespace ariel
         }
         else
         {
-            if (_location.distance(enemy->getLocation()) > 100)
+            if (getLocation().distance(enemy->getLocation()) > 100)
             {
                 cout << "Too far to slash the enemy\n"
                      << endl;
                 return;
             }
             else
-                enemy->hit(31);
+                enemy->hit(40);
         }
     }
 
-    string Ninja::print()
+    string Ninja::print() const
     {
-        cout << "N(" + _name << ")\n"
+        cout << "N(" + getName() << ")\n"
              << endl;
         if (isAlive())
-            cout << "Hit points: " << (110 - _health) << " Points left: " << _health << "\n"
+            cout << "Hit points: " << (110 - getHealth()) << " Points left: " << getHealth() << "\n"
                  << endl;
         else
             cout << "Hit points: " << 110 << " Points left: -- "
@@ -54,7 +54,7 @@ namespace ariel
 
     void Ninja::_attack(Character *enemy)
     {
-        if (_location.distance(enemy->getLocation()) > 100)
+        if (getLocation().distance(enemy->getLocation()) > 100)
             move(enemy);
         else
             slash(enemy);

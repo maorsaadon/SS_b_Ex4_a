@@ -22,6 +22,38 @@ namespace ariel
         _team.push_back(_teamLeader);
     }
 
+    Team::Team(const Team &other) : _teamLeader(other._teamLeader), _team(other._team) {}
+
+    Team::Team(Team &&other) noexcept : _teamLeader(other._teamLeader), _team(other._team) {}
+
+    Team &Team::operator=(const Team &other)
+    {
+        if (this == &other)
+            return *this;
+
+        this->_teamLeader = other._teamLeader;
+        this->_team = other._team;
+        return *this;
+    }
+
+    Team &Team::operator=(Team &&other) noexcept
+    {
+        if (this == &other)
+            return *this;
+
+        this->_teamLeader = other._teamLeader;
+        this->_team = other._team;
+        return *this;
+    }
+
+    Team::~Team()
+    {
+        for (auto player : _team)
+        {
+            delete player;
+        }
+    }
+
     void Team::add(Character *player)
     {
         if (!player->GetInTeam() || player->isAlive() || _counter < 11)
@@ -107,10 +139,5 @@ namespace ariel
         for (uint i = 1; i < _team.size(); i++)
             _team.at(i)->print();
     }
-
-    // Team::~Team()
-    // {
-    //     _team.clear();
-    // }
 
 }

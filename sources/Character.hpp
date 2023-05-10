@@ -11,7 +11,7 @@ using namespace std;
 
 namespace ariel{
     class  Character{
-        protected:
+        private:
             string _name;
             Point _location;
             int _health;
@@ -20,8 +20,21 @@ namespace ariel{
         
         public:
             Character(const string& _name, const Point& _location, int _health);
+            
+            Character(const Character &other);
 
-            // ~Character() = default;
+            Character(Character &&other) noexcept;
+
+            Character &operator=(const Character &other);
+            
+            Character &operator=(Character &&other) noexcept;
+
+            //virtual destructor
+            virtual ~Character() {}
+            
+            virtual string print() const = 0;
+
+             virtual void _attack(Character *enemy) = 0;
 
             bool isAlive() const;
 
@@ -33,18 +46,15 @@ namespace ariel{
 
             const Point& getLocation() const;
 
-            virtual string print() = 0;
+            int getHealth() const;
 
-            bool GetInTeam();
+            bool GetInTeam() const;
             
             void SetInTeam(bool status);
 
             int GetId();
             
             void SetId(int status);
-
-            virtual void _attack(Character *enemy) = 0;
-            
 
     };
 };

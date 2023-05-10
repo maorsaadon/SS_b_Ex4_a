@@ -1,8 +1,6 @@
 #ifndef TEAM_HPP
 #define TEAM_HPP
 
-
-
 #include "Point.hpp"
 #include "Cowboy.hpp"
 #include "OldNinja.hpp"
@@ -13,58 +11,43 @@
 
 using namespace ariel;
 
+namespace ariel
+{
 
-namespace ariel{
+    class Team
+    {
 
-    class Team{
+    private:
+        vector<Character *> _team;
 
-        private:
+        Character *_teamLeader;
 
-            vector<Character*> _team;
+        int _counter = 0;
 
-            Character* _teamLeader;
+    public:
+        Team(Character *leader);
 
-            int _counter = 0;
+        void add(Character *player);
 
-        public:
+        void attack(Team *other);
 
-            Team(Character* leader);
+        int stillAlive() const;
 
-            void add(Character* player);
+        void print() const;
 
-            void attack(Team* other);
+        // destructor
+        ~Team();
 
-            int stillAlive() const;
-            
-            void print() const;
+        Team(const Team &other);
 
-            // //destructor
-            // ~Team();
+        Team(Team &&other) noexcept;
 
-            // Team(const Team& other) : _teamLeader(other._teamLeader){
-            // // Copy the state of the `other` object
-            // // to the new `Team` object
-            // // ...
-            // }
+        // Copy assignment operator
+        Team &operator=(const Team &other);
 
-            // // Copy assignment operator
-            // Team& operator=(const Team& other) {
-            //     if (this != &other) {
-            //         // Copy the state of the `other` object
-            //         // to the current object
-            //         // ...
-            //     }
-            //     return *this;
-            // }
-
-            // // Move constructor
-            // Team(Team&& other) = default;
-
-            // // Move assignment operator
-            // Team& operator=(Team&& other) = default;
+        // Move assignment operator
+        Team &operator=(Team &&other) noexcept;
     };
 }
-
-
 
 #endif

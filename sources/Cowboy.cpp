@@ -33,10 +33,10 @@ namespace ariel
             _bulletsAmount = 6;
     }
 
-    string Cowboy::print(){
-        cout << "C(" + _name << ")\n" << endl;
+    string Cowboy::print() const{
+        cout << "C(" + getName() << ")\n" << endl;
         if(isAlive())
-            cout << "Hit points: "  << (110 - _health) << " Points left: " << _health << "\n" << endl;
+            cout << "Hit points: "  << (110 - getHealth()) << " Points left: " << getHealth() << "\n" << endl;
         else
             cout << "Hit points: " << 110 << " Points left: -- " << "\n" << endl;
 

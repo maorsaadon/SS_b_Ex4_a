@@ -25,7 +25,7 @@ namespace ariel
 
         void reload();
 
-        string print() override;
+        string print() const override;
         
         void _attack(Character *enemy) override;
     };

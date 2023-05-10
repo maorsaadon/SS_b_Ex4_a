@@ -7,7 +7,7 @@
 namespace ariel{
 
     class Ninja : public Character{
-        protected:
+        private:
             int _speed;
             bool _inTeam = false;
 
@@ -21,7 +21,7 @@ namespace ariel{
 
             void slash(Character* enemy);
 
-            string print() override;
+            string print() const override;
 
             void _attack(Character *enemy) override;
     };

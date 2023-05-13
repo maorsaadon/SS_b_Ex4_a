@@ -16,6 +16,7 @@ namespace ariel{
             Point _location;
             int _health;
             int _id = 0;
+            int _hit = 0;
             bool _inTeam = false;
         
         public:
@@ -34,7 +35,7 @@ namespace ariel{
             
             virtual string print() const = 0;
 
-             virtual void _attack(Character *enemy) = 0;
+            virtual void _attack(Character *enemy) = 0;
 
             bool isAlive() const;
 
@@ -46,15 +47,19 @@ namespace ariel{
 
             const Point& getLocation() const;
 
+            void setLocation(const Point &location);
+
             int getHealth() const;
 
-            bool GetInTeam() const;
+            bool getInTeam() const;
             
-            void SetInTeam(bool status);
+            void setInTeam(bool status);
 
-            int GetId();
+            int getId() const;
             
             void SetId(int status);
+
+            int getHit() const;
 
     };
 };

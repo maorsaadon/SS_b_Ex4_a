@@ -1,4 +1,9 @@
+#include <iostream>
+#include <string>
+#include "Character.hpp"
 #include "Ninja.hpp"
+
+using namespace std;
 
 namespace ariel
 {
@@ -13,7 +18,7 @@ namespace ariel
             return;
         }
         else
-            getLocation().moveTowards(enemy->getLocation(), _speed);
+            setLocation(getLocation().moveTowards(enemy->getLocation(), _speed));
     }
 
     void Ninja::slash(Character *enemy)
@@ -39,17 +44,19 @@ namespace ariel
 
     string Ninja::print() const
     {
-        cout << "N(" + getName() << ")\n"
-             << endl;
+        string output = "\tN(" + getName() + ")\n\n";
         if (isAlive())
-            cout << "Hit points: " << (110 - getHealth()) << " Points left: " << getHealth() << "\n"
-                 << endl;
+        {
+            output += "\t\tHit points: " + to_string(getHit()) + " Points left: " + to_string(getHealth()) + "\n\n";
+        }
         else
-            cout << "Hit points: " << 110 << " Points left: -- "
-                 << "\n"
-                 << endl;
+        {
+            output += "\t\tHit points: " + to_string(getHit()) + " Points left: --\n\n";
+        }
 
-        return " ";
+        cout << output; // Print to the console
+
+        return output;
     }
 
     void Ninja::_attack(Character *enemy)
@@ -58,7 +65,11 @@ namespace ariel
             move(enemy);
         else
             slash(enemy);
-            
     }
 
-}
+    int Ninja::getSpeed() const
+    {
+        return _speed;
+    }
+
+} // namespace ariel

@@ -1,6 +1,6 @@
-
-#include <stdio.h>
+#include <iostream>
 #include <string>
+#include "Character.hpp"
 #include "Cowboy.hpp"
 
 using namespace std;
@@ -11,8 +11,10 @@ namespace ariel
 
     void Cowboy::shoot(Character *enemy)
     {
-        if (!isAlive()){
-            cout << "This character is dead\n" << endl;
+        if (!isAlive())
+        {
+            cout << "This character is dead\n"
+                 << endl;
             return;
         }
         else
@@ -22,32 +24,47 @@ namespace ariel
         }
     }
 
-    bool Cowboy::hasboolets() const{
+       bool Cowboy::hasboolets() const
+    {
         return (_bulletsAmount > 0);
     }
 
-    void Cowboy::reload(){
-        if(_bulletsAmount > 0)
+    void Cowboy::reload()
+    {
+        if (_bulletsAmount > 0)
             throw invalid_argument("You have bullets\n");
         else
             _bulletsAmount = 6;
     }
 
-    string Cowboy::print() const{
-        cout << "C(" + getName() << ")\n" << endl;
-        if(isAlive())
-            cout << "Hit points: "  << (110 - getHealth()) << " Points left: " << getHealth() << "\n" << endl;
+    string Cowboy::print() const
+    {
+        string output = "\tC(" + getName() + ")\n\n";
+        if (isAlive())
+        {
+            output += "\t\tHit points: " + to_string(getHit()) + " Points left: " + to_string(getHealth()) + "\n\n";
+        }
         else
-            cout << "Hit points: " << 110 << " Points left: -- " << "\n" << endl;
+        {
+            output += "\t\tHit points: " + to_string(getHit()) + " Points left: --\n\n";
+        }
 
-        return " ";
+        cout << output; // Print to the console
+
+        return output;
     }
 
-    void Cowboy:: _attack(Character *enemy){
+    void Cowboy::_attack(Character *enemy)
+    {
         if (!hasboolets())
             reload();
-        else shoot(enemy);
+        else
+            shoot(enemy);
     }
 
+    int Cowboy::getBulletsAmount() const
+    {
+        return _bulletsAmount;
+    }
 
-}
+} // namespace ariel

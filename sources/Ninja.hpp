@@ -15,8 +15,6 @@ namespace ariel{
 
             Ninja(const string& _name, const Point& _location, int _health , int _speed);
 
-            // ~Ninja() = default;
-
             void move(Character* enemy);
 
             void slash(Character* enemy);
@@ -24,6 +22,8 @@ namespace ariel{
             string print() const override;
 
             void _attack(Character *enemy) override;
+
+            int getSpeed() const;
     };
 
 }

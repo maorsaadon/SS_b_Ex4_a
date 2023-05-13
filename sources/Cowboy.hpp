@@ -28,6 +28,8 @@ namespace ariel
         string print() const override;
         
         void _attack(Character *enemy) override;
+
+        int getBulletsAmount() const;
     };
 }
 

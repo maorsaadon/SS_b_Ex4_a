@@ -47,6 +47,10 @@ namespace ariel
 
         // Move assignment operator
         Team &operator=(Team &&other) noexcept;
+
+        Character *getLeader() const;
+
+        vector<Character*> getTeam() const;
     };
 }
 

@@ -6,11 +6,11 @@ using namespace std;
 
 namespace ariel
 {
-    Character::Character(const string &_name, const Point &_location, int _health) : _name(_name), _location(_location), _health(_health), _inTeam(false), _id(0), _hit(110 - _health) {}
+    Character::Character(const string &_name, const Point &_location, int _health) : _name(_name), _location(_location), _health(_health), _inTeam(false), _hit(0){}
 
-    Character::Character(const Character &other) : _name(other._name), _location(other._location), _health(other._health), _inTeam(other._inTeam), _id(other._id), _hit(other._hit) {}
+    Character::Character(const Character &other) : _name(other._name), _location(other._location), _health(other._health), _inTeam(other._inTeam), _hit(other._hit) {}
 
-    Character::Character(Character &&other) noexcept : _name(move(other._name)), _location(move(other._location)), _health(other._health), _inTeam(other._inTeam), _id(other._id), _hit(other._hit) {}
+    Character::Character(Character &&other) noexcept : _name(other._name), _location(other._location), _health(other._health), _inTeam(other._inTeam), _hit(other._hit) {}
 
     Character &Character::operator=(const Character &other)
     {
@@ -21,7 +21,6 @@ namespace ariel
         _location = other._location;
         _health = other._health;
         _inTeam = other._inTeam;
-        _id = other._id;
         _hit = other._hit;
 
         return *this;
@@ -36,7 +35,6 @@ namespace ariel
         _location = move(other._location);
         _health = other._health;
         _inTeam = other._inTeam;
-        _id = other._id;
         _hit = other._hit;
 
         return *this;
@@ -57,6 +55,8 @@ namespace ariel
 
     void Character::hit(int hits)
     {
+        if(hits < 0)
+            throw invalid_argument("hits < 0");
         _health -= hits;
         _hit += hits;
     }
@@ -89,16 +89,6 @@ namespace ariel
     void Character::setInTeam(bool status)
     {
         _inTeam = status;
-    }
-
-    int Character::getId() const
-    {
-        return _id;
-    }
-
-    void Character::SetId(int id)
-    {
-        _id = id;
     }
 
     int Character::getHit() const

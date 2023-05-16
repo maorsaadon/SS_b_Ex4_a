@@ -11,9 +11,17 @@ namespace ariel
 
     void Cowboy::shoot(Character *enemy)
     {
+        if(enemy == nullptr)
+            throw invalid_argument("Nullptr\n");
+        if (this == enemy)
+            throw runtime_error("Cant kill himself\n");
         if (!isAlive())
+            throw runtime_error("cant shoot\n");
+        if (!enemy->isAlive())
+            throw runtime_error("This enemy is allready dead\n");
+        else if (_bulletsAmount <= 0)
         {
-            cout << "This character is dead\n"
+            cout << "Out of bullets\n"
                  << endl;
             return;
         }
@@ -24,38 +32,35 @@ namespace ariel
         }
     }
 
-       bool Cowboy::hasboolets() const
+    bool Cowboy::hasboolets() const
     {
         return (_bulletsAmount > 0);
     }
 
     void Cowboy::reload()
     {
-        if (_bulletsAmount > 0)
-            throw invalid_argument("You have bullets\n");
-        else
-            _bulletsAmount = 6;
+        if (!isAlive())
+            throw runtime_error("can't reload\n");
+        _bulletsAmount = 6;
     }
 
     string Cowboy::print() const
     {
-        string output = "\tC(" + getName() + ")\n\n";
+        string output = "\tC " + getName() ;
         if (isAlive())
-        {
-            output += "\t\tHit points: " + to_string(getHit()) + " Points left: " + to_string(getHealth()) + "\n\n";
-        }
+            output += " " + to_string(getHealth()) + " " + getLocation().print() + "\n";
         else
-        {
-            output += "\t\tHit points: " + to_string(getHit()) + " Points left: --\n\n";
-        }
+            output += " -- " + getLocation().print() + "\n";
 
-        cout << output; // Print to the console
+        cout << output;
 
         return output;
     }
 
-    void Cowboy::_attack(Character *enemy)
+    void Cowboy::attack(Character *enemy)
     {
+        if (enemy == nullptr || !enemy->isAlive() || !isAlive())
+            throw invalid_argument("attack failed");
         if (!hasboolets())
             reload();
         else

@@ -1,26 +1,18 @@
-#include "Team.hpp"
 
-#include <cmath>
-#include <stdexcept>
-#include <numeric>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <random>
-#include <chrono>
-#include <sstream>
-#include <memory>
+#include "Team.hpp"
 
 namespace ariel
 {
 
     Team::Team(Character *_teamLeader) : _teamLeader(_teamLeader)
     {
-        _teamLeader->SetId(_counter);
-        _counter++;
-        _team.push_back(_teamLeader);
+        if (_teamLeader == nullptr)
+            throw invalid_argument("Team leader cannot be null");
+
+        this->add(_teamLeader);
     }
+
+    Team::Team(Character *teamLeader, const vector<Character *> &team) : _teamLeader(teamLeader), _team(team) {}
 
     Team::Team(const Team &other) : _teamLeader(other._teamLeader), _team(other._team) {}
 
@@ -48,93 +40,72 @@ namespace ariel
 
     Team::~Team()
     {
-        for (auto player : _team)
+        for (auto fighter : _team)
         {
-            delete player;
+            delete fighter;
         }
+        _team.clear();
+    }
+
+    vector<Character *> &Team::getTeam()
+    {
+        return _team;
     }
 
     void Team::add(Character *player)
     {
-        if (!player->getInTeam() || player->isAlive() || _counter < 11)
+        if (player != nullptr && player->isAlive() && !player->getInTeam() && _team.size() < MaxSizeOfTeam)
         {
-            _team.push_back(player);
+            if (dynamic_cast<Cowboy *>(player) != nullptr)
+                _team.insert(_team.begin(), player);
+            else
+                _team.push_back(player);
+
             player->setInTeam(true);
-            player->SetId(_counter);
-            _counter++;
         }
+
         else
-            throw invalid_argument("Can't add this player");
-    }
-
-    void Team::attack(Team *enemyTeam)
-    {
-        if (!_teamLeader->isAlive())
         {
-            Character *newLeader = nullptr;
-            double minDistance = numeric_limits<double>::max();
+            throw runtime_error("Can't add this player");
+        }
+    }
+    void Team::attack(Team *enemy)
+    {
+        if (enemy == nullptr)
+            throw invalid_argument("enemy is nullptr");
 
-            for (Character *member : _team)
+        if (stillAlive() == 0 || enemy->stillAlive() == 0)
+            throw runtime_error("Game over");
+
+        if (!_teamLeader->isAlive())
+            chooseNewLeader();
+
+        Character *victim = nullptr;
+
+        if (enemy->stillAlive() > 0)
+            victim = findClosestLivingMember(enemy->_team, _teamLeader->getLocation());
+        else
+            return;
+
+        for (auto fighter : _team)
+        {
+            if (fighter != nullptr && fighter->isAlive())
             {
-                if (member->isAlive())
+                if (victim != nullptr && victim->isAlive())
                 {
-                    double distance = _teamLeader->getLocation().distance(member->getLocation());
-                    if (distance < minDistance)
+                    fighter->attack(victim);
+                    victim->print();
+                }
+                else
+                {
+                    victim = findClosestLivingMember(enemy->_team, _teamLeader->getLocation());
+                    if (victim != nullptr && victim->isAlive())
                     {
-                        minDistance = distance;
-                        newLeader = member;
+                        fighter->attack(victim);
+                        victim->print();
                     }
                 }
             }
-
-            if (newLeader != nullptr)
-            {
-                _teamLeader = newLeader;
-                cout << "New leader chosen: " << _teamLeader->getName() << endl;
-            }
-            else
-            {
-                cout << "No living character to become the new leader!" << endl;
-                return;
-            }
-        }
-
-        Character *victim = nullptr;
-        double minDistance = numeric_limits<double>::max();
-
-        for (Character *enemy : enemyTeam->getTeam())
-        {
-            if (enemy->isAlive())
-            {
-                double distance = _teamLeader->getLocation().distance(enemy->getLocation());
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    victim = enemy;
-                }
-            }
-        }
-
-        if (victim == nullptr)
-        {
-            cout << "No living enemy to attack!" << endl;
-            return;
-        }
-
-        while (victim->isAlive() && stillAlive() > 0 && enemyTeam->stillAlive() > 0)
-        {
-            for (Character *member : _team)
-            {
-                if (member->isAlive())
-                {
-                    member->_attack(victim);
-                }
-            }
-        }
-
-        if (stillAlive() == 0 || enemyTeam->stillAlive() == 0)
-        {
-            cout << "Game over" << endl;
         }
     }
 
@@ -142,19 +113,23 @@ namespace ariel
     {
         int counter = 0;
 
-        for (uint i = 0; i < _team.size(); i++)
-            if (_team.at(i)->isAlive())
+        for (auto fighter : this->_team)
+        {
+            if (fighter->isAlive())
+            {
                 counter++;
+            }
+        }
 
         return counter;
     }
 
     void Team::print() const
     {
-        cout << "The member team : \n"
+        cout << "The member team : "
              << endl;
-        for (uint i = 0; i < _team.size(); i++)
-            _team.at(i)->print();
+        for (auto fighter : _team)
+            fighter->print();
     }
 
     Character *Team::getLeader() const
@@ -162,9 +137,46 @@ namespace ariel
         return _teamLeader;
     }
 
-    vector<Character *> Team::getTeam() const
+    void Team::chooseNewLeader()
     {
-        return _team;
+        Character *newLeader = nullptr;
+        double minDistance = numeric_limits<double>::max();
+
+        for (auto fighter : _team)
+        {
+            if (fighter->isAlive() && fighter != _teamLeader)
+            {
+                double distance = _teamLeader->getLocation().distance(fighter->getLocation());
+                if (distance <= minDistance)
+                {
+                    minDistance = distance;
+                    newLeader = fighter;
+                }
+            }
+        }
+
+        if (newLeader != nullptr)
+            _teamLeader = newLeader;
     }
 
+    Character *Team::findClosestLivingMember(const vector<Character *> &players, const Point &targetLocation)
+    {
+        Character *closestCharacter = nullptr;
+        double minDistance = numeric_limits<double>::max();
+
+        for (auto character : players)
+        {
+            if (character->isAlive() && character != nullptr)
+            {
+                double distance = targetLocation.distance(character->getLocation());
+                if (distance <= minDistance)
+                {
+                    minDistance = distance;
+                    closestCharacter = character;
+                }
+            }
+        }
+
+        return closestCharacter;
+    }
 }

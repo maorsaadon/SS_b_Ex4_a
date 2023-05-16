@@ -11,60 +11,60 @@ namespace ariel
 
     void Ninja::move(Character *enemy)
     {
+        if (enemy == nullptr)
+            throw invalid_argument("Nullptr\n");
         if (!isAlive())
-        {
-            cout << "This character is dead\n"
-                 << endl;
-            return;
-        }
+            throw runtime_error("Im dead can't move\n");
+        if (!enemy->isAlive())
+            throw runtime_error("This enemy is allready dead\n");
         else
-            setLocation(getLocation().moveTowards(enemy->getLocation(), _speed));
+            setLocation(Point::moveTowards(getLocation(), enemy->getLocation(), _speed));
     }
 
     void Ninja::slash(Character *enemy)
     {
+        if (enemy == nullptr)
+            throw invalid_argument("Nullptr\n");
+        if (this == enemy)
+            throw runtime_error("Cant kill himself\n");
         if (!isAlive())
-        {
-            cout << "This character is dead\n"
-                 << endl;
-            return;
-        }
+            throw runtime_error("Im dead can't kill enyone\n");
+        if (!enemy->isAlive())
+            throw runtime_error("This enemy is allready dead\n");
         else
         {
-            if (getLocation().distance(enemy->getLocation()) > 100)
+            if (getLocation().distance(enemy->getLocation()) < 1)
+                enemy->hit(40);
+            else
             {
                 cout << "Too far to slash the enemy\n"
                      << endl;
                 return;
             }
-            else
-                enemy->hit(40);
         }
     }
 
     string Ninja::print() const
     {
-        string output = "\tN(" + getName() + ")\n\n";
+        string output = "\tN " + getName();
         if (isAlive())
-        {
-            output += "\t\tHit points: " + to_string(getHit()) + " Points left: " + to_string(getHealth()) + "\n\n";
-        }
+            output += " " + to_string(getHealth()) + " " + getLocation().print() + "\n";
         else
-        {
-            output += "\t\tHit points: " + to_string(getHit()) + " Points left: --\n\n";
-        }
-
-        cout << output; // Print to the console
+            output += " -- " + getLocation().print() + "\n";
+        
+        cout << output;
 
         return output;
     }
 
-    void Ninja::_attack(Character *enemy)
+    void Ninja::attack(Character *enemy)
     {
-        if (getLocation().distance(enemy->getLocation()) > 100)
-            move(enemy);
-        else
+        if (enemy == nullptr || !enemy->isAlive() || !isAlive())
+            throw invalid_argument("attack failed");
+        if (getLocation().distance(enemy->getLocation()) <= 1)
             slash(enemy);
+        else
+            move(enemy);
     }
 
     int Ninja::getSpeed() const

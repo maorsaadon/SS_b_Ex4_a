@@ -1,13 +1,25 @@
 #ifndef TEAM_HPP
 #define TEAM_HPP
 
+#include <cmath>
+#include <stdexcept>
+#include <numeric>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <random>
+#include <chrono>
+#include <sstream>
+#include <memory>
+
 #include "Point.hpp"
 #include "Cowboy.hpp"
 #include "OldNinja.hpp"
 #include "YoungNinja.hpp"
 #include "TrainedNinja.hpp"
 
-#include <vector>
+const int MaxSizeOfTeam = 10;
 
 using namespace ariel;
 
@@ -22,21 +34,17 @@ namespace ariel
 
         Character *_teamLeader;
 
-        int _counter = 0;
+        void chooseNewLeader();
+
+        Character *findClosestLivingMember(const vector<Character *> &characters, const Point &targetLocation);
 
     public:
-        Team(Character *leader);
+        Team(Character *_teamleader);
 
-        void add(Character *player);
-
-        void attack(Team *other);
-
-        int stillAlive() const;
-
-        void print() const;
-
+        Team(Character *_teamLeader, const vector<Character*>& _team);
+        
         // destructor
-        ~Team();
+        virtual ~Team();
 
         Team(const Team &other);
 
@@ -50,7 +58,15 @@ namespace ariel
 
         Character *getLeader() const;
 
-        vector<Character*> getTeam() const;
+        vector<Character*>& getTeam();
+
+        virtual void add(Character *player);
+
+        void attack(Team *other);
+
+        int stillAlive() const;
+
+        void print() const;
     };
 }
 

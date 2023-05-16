@@ -7,63 +7,55 @@
 
 using namespace std;
 
+namespace ariel
+{
+    class Character
+    {
+    private:
+        string _name;
+        Point _location;
+        int _health;
+        int _hit;
+        bool _inTeam = false;
 
+    public:
+        Character(const string &_name, const Point &_location, int _health);
 
-namespace ariel{
-    class  Character{
-        private:
-            string _name;
-            Point _location;
-            int _health;
-            int _id = 0;
-            int _hit = 0;
-            bool _inTeam = false;
-        
-        public:
-            Character(const string& _name, const Point& _location, int _health);
-            
-            Character(const Character &other);
+        Character(const Character &other);
 
-            Character(Character &&other) noexcept;
+        Character(Character &&other) noexcept;
 
-            Character &operator=(const Character &other);
-            
-            Character &operator=(Character &&other) noexcept;
+        Character &operator=(const Character &other);
 
-            //virtual destructor
-            virtual ~Character() {}
-            
-            virtual string print() const = 0;
+        Character &operator=(Character &&other) noexcept;
 
-            virtual void _attack(Character *enemy) = 0;
+        // virtual destructor
+        virtual ~Character() {}
 
-            bool isAlive() const;
+        virtual string print() const = 0;
 
-            double distance(const Character* other) const;
+        virtual void attack(Character *enemy) = 0;
 
-            void hit(int hits);
+        bool isAlive() const;
 
-            const string& getName() const;
+        double distance(const Character *other) const;
 
-            const Point& getLocation() const;
+        void hit(int hits);
 
-            void setLocation(const Point &location);
+        const string &getName() const;
 
-            int getHealth() const;
+        const Point &getLocation() const;
 
-            bool getInTeam() const;
-            
-            void setInTeam(bool status);
+        void setLocation(const Point &location);
 
-            int getId() const;
-            
-            void SetId(int status);
+        int getHealth() const;
 
-            int getHit() const;
+        bool getInTeam() const;
 
+        void setInTeam(bool status);
+
+        int getHit() const;
     };
 };
-
-
 
 #endif

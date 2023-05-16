@@ -3,14 +3,17 @@
 
 #include "Ninja.hpp"
 
+
+const int YoungNinjaSpeed = 14;
+const int YoungNinjaHealth = 100;
+
 namespace ariel
 {
 
     class YoungNinja : public Ninja
     {
-
     public:
-        YoungNinja(const string &name, const Point &location);
+        YoungNinja(const string &_name, const Point &_location) : Ninja(_name, _location, YoungNinjaHealth, YoungNinjaSpeed) {}
         // ~YoungNinja() = default;
     };
 }

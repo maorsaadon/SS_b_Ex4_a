@@ -3,6 +3,9 @@
 
 #include "Ninja.hpp"
 
+const int TrainedNinjaSpeed = 12;
+const int TrainedNinjaHealth = 120;
+
 namespace ariel
 {
 
@@ -10,7 +13,7 @@ namespace ariel
     {
 
     public:
-        TrainedNinja(const string &name, const Point &location);
+        TrainedNinja(const string &_name, const Point &_location) : Ninja(_name, _location, TrainedNinjaHealth, TrainedNinjaSpeed){}
         // ~TrainedNinja() = default;
     };
 }
